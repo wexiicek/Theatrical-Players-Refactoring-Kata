@@ -18,7 +18,7 @@ class StatementPrinter {
 
             when (play?.type) {
                 "tragedy" -> {
-                    thisAmount = 40000
+                    thisAmount = 12345
                     if (audience > 30) {
                         thisAmount += 1000 * (audience - 30)
                     }
