@@ -6,6 +6,32 @@ namespace TheatricalPlayersRefactoringKata
 {
     public class StatementPrinter
     {
+
+        private int DetermineAmountByPlaytype(string playType, int audience)
+        {
+            var thisAmount = 0;
+            switch (playType) 
+            {
+                case "tragedy":
+                    thisAmount = 40000;
+                    if (audience > 30) {
+                        thisAmount += 1000 * (audience - 30);
+                    }
+                    break;
+                case "comedy":
+                    thisAmount = 30000;
+                    if (audience > 20) {
+                        thisAmount += 10000 + 500 * (audience - 20);
+                    }
+                    thisAmount += 300 * audience;
+                    break;
+                default:
+                    throw new Exception("unknown type: " + playType);
+            }
+            
+            return thisAmount;
+        }
+        
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
             var totalAmount = 0;
@@ -17,24 +43,9 @@ namespace TheatricalPlayersRefactoringKata
             {
                 var play = plays[perf.PlayID];
                 var thisAmount = 0;
-                switch (play.Type) 
-                {
-                    case "tragedy":
-                        thisAmount = 40000;
-                        if (perf.Audience > 30) {
-                            thisAmount += 1000 * (perf.Audience - 30);
-                        }
-                        break;
-                    case "comedy":
-                        thisAmount = 30000;
-                        if (perf.Audience > 20) {
-                            thisAmount += 10000 + 500 * (perf.Audience - 20);
-                        }
-                        thisAmount += 300 * perf.Audience;
-                        break;
-                    default:
-                        throw new Exception("unknown type: " + play.Type);
-                }
+
+                thisAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
+                
                 // add volume credits
                 volumeCredits += Math.Max(perf.Audience - 30, 0);
                 // add extra credit for every ten comedy attendees
