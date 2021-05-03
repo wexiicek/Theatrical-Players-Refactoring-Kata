@@ -7,9 +7,12 @@ namespace TheatricalPlayersRefactoringKata
     public class StatementPrinter
     {
         private List<string> extraCreditCategory = new List<string>() { "comedy" };
+        
         private const float basePriceComedy = 30000;
         private const float basePriceTragedy = 40000;
         
+        private const int audienceTresholdComedy = 20;
+        private const int audienceTresholdTragedy = 30;
 
         private float DetermineAmountByPlaytype(string playType, int audience)
         {
@@ -32,9 +35,9 @@ namespace TheatricalPlayersRefactoringKata
         private static float getPriceForComedy(int audience)
         {
             float totalPerformancePrice = basePriceComedy;
-            if (audience > 20)
+            if (audience > audienceTresholdComedy)
             {
-                totalPerformancePrice += 10000 + 500 * (audience - 20);
+                totalPerformancePrice += 10000 + 500 * (audience - audienceTresholdComedy);
             }
 
             totalPerformancePrice += 300 * audience;
@@ -44,9 +47,9 @@ namespace TheatricalPlayersRefactoringKata
         private static float getPriceForTragedy(int audience)
         {
             float totalPerformancePrice = basePriceTragedy;
-            if (audience > 30)
+            if (audience > audienceTresholdTragedy)
             {
-                totalPerformancePrice += 1000 * (audience - 30);
+                totalPerformancePrice += 1000 * (audience - audienceTresholdTragedy);
             }
 
             return totalPerformancePrice;
