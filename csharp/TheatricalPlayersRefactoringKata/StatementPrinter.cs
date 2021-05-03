@@ -7,44 +7,44 @@ namespace TheatricalPlayersRefactoringKata
     public class StatementPrinter
     {
 
-        private int DetermineAmountByPlaytype(string playType, int audience)
+        private float DetermineAmountByPlaytype(string playType, int audience)
         {
-            var thisAmount = 0;
+            float totalPerformancePrice = 0;
             switch (playType) 
             {
                 case "tragedy":
-                    thisAmount = 40000;
+                    totalPerformancePrice = 40000;
                     if (audience > 30) {
-                        thisAmount += 1000 * (audience - 30);
+                        totalPerformancePrice += 1000 * (audience - 30);
                     }
                     break;
                 case "comedy":
-                    thisAmount = 30000;
+                    totalPerformancePrice = 30000;
                     if (audience > 20) {
-                        thisAmount += 10000 + 500 * (audience - 20);
+                        totalPerformancePrice += 10000 + 500 * (audience - 20);
                     }
-                    thisAmount += 300 * audience;
+                    totalPerformancePrice += 300 * audience;
                     break;
                 default:
                     throw new Exception("unknown type: " + playType);
             }
             
-            return thisAmount;
+            return totalPerformancePrice;
         }
         
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
-            var totalAmount = 0;
+            float totalAmount = 0;
             var volumeCredits = 0;
-            var result = string.Format("Statement for {0}\n", invoice.Customer);
+            var outputString = $"Statement for {invoice.Customer}\n";
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
             foreach(var perf in invoice.Performances) 
             {
                 var play = plays[perf.PlayID];
-                var thisAmount = 0;
+                float performanceAmount = 0;
 
-                thisAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
+                performanceAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
                 
                 // add volume credits
                 volumeCredits += Math.Max(perf.Audience - 30, 0);
@@ -52,12 +52,12 @@ namespace TheatricalPlayersRefactoringKata
                 if ("comedy" == play.Type) volumeCredits += (int)Math.Floor((decimal)perf.Audience / 5);
 
                 // print line for this order
-                result += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(thisAmount / 100), perf.Audience);
-                totalAmount += thisAmount;
+                outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(performanceAmount / 100), perf.Audience);
+                totalAmount += performanceAmount;
             }
-            result += String.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalAmount / 100));
-            result += String.Format("You earned {0} credits\n", volumeCredits);
-            return result;
+            outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalAmount / 100));
+            outputString += $"You earned {volumeCredits} credits\n";
+            return outputString;
         }
     }
 }
