@@ -6,8 +6,8 @@ namespace TheatricalPlayersRefactoringKata
 {
     public class StatementPrinter
     {
-        //private string[] extraCreditCategory = { "comedy" };
         private List<string> extraCreditCategory = new List<string>() { "comedy" };
+
 
         private float DetermineAmountByPlaytype(string playType, int audience)
         {
@@ -15,17 +15,10 @@ namespace TheatricalPlayersRefactoringKata
             switch (playType) 
             {
                 case "tragedy":
-                    totalPerformancePrice = 40000;
-                    if (audience > 30) {
-                        totalPerformancePrice += 1000 * (audience - 30);
-                    }
+                    totalPerformancePrice = StatementPrinter.getPriceForTragedy(audience);
                     break;
                 case "comedy":
-                    totalPerformancePrice = 30000;
-                    if (audience > 20) {
-                        totalPerformancePrice += 10000 + 500 * (audience - 20);
-                    }
-                    totalPerformancePrice += 300 * audience;
+                    totalPerformancePrice = getPriceForComedy(audience);
                     break;
                 default:
                     throw new Exception("unknown type: " + playType);
@@ -33,7 +26,32 @@ namespace TheatricalPlayersRefactoringKata
             
             return totalPerformancePrice;
         }
-        
+
+        private static float getPriceForComedy(int audience)
+        {
+            float totalPerformancePrice;
+            totalPerformancePrice = 30000;
+            if (audience > 20)
+            {
+                totalPerformancePrice += 10000 + 500 * (audience - 20);
+            }
+
+            totalPerformancePrice += 300 * audience;
+            return totalPerformancePrice;
+        }
+
+        private static float getPriceForTragedy(int audience)
+        {
+            float totalPerformancePrice;
+            totalPerformancePrice = 40000;
+            if (audience > 30)
+            {
+                totalPerformancePrice += 1000 * (audience - 30);
+            }
+
+            return totalPerformancePrice;
+        }
+
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
             float totalAmount = 0;
