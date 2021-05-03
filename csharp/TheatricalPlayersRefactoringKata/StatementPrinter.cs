@@ -35,13 +35,13 @@ namespace TheatricalPlayersRefactoringKata
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
             float totalAmount = 0;
-            var volumeCredits = 0;
-            var outputString = $"Statement for {invoice.Customer}\n";
+            int volumeCredits = 0;
+            string outputString = $"Statement for {invoice.Customer}\n";
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
             foreach(var perf in invoice.Performances) 
             {
-                var play = plays[perf.PlayID];
+                Play play = plays[perf.PlayID];
                 float performanceAmount = 0;
 
                 performanceAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
