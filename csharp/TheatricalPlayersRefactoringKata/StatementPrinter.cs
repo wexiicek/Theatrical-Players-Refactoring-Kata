@@ -6,6 +6,8 @@ namespace TheatricalPlayersRefactoringKata
 {
     public class StatementPrinter
     {
+        //private string[] extraCreditCategory = { "comedy" };
+        private List<string> extraCreditCategory = new List<string>() { "comedy" };
 
         private float DetermineAmountByPlaytype(string playType, int audience)
         {
@@ -49,7 +51,10 @@ namespace TheatricalPlayersRefactoringKata
                 // add volume credits
                 volumeCredits += Math.Max(perf.Audience - 30, 0);
                 // add extra credit for every ten comedy attendees
-                if ("comedy" == play.Type) volumeCredits += (int)Math.Floor((decimal)perf.Audience / 5);
+                if (extraCreditCategory.Contains(play.Type))
+                {
+                    volumeCredits += (int)Math.Floor((decimal)perf.Audience / 5);
+                }
 
                 // print line for this order
                 outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(performanceAmount / 100), perf.Audience);
