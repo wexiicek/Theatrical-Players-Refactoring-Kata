@@ -63,22 +63,34 @@ namespace TheatricalPlayersRefactoringKata
             string outputString = $"Statement for {invoice.Customer}\n";
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
-            processPerformances(invoice, plays, ref totalAmount, ref volumeCredits, ref outputString, cultureInfo);
-
+            foreach (var perf in invoice.Performances)
+            {
+                Play play = plays[perf.PlayID];
+                float performanceAmount = CalculatePerformanceAmount(play, perf);
+                totalAmount += performanceAmount;
+                volumeCredits += CalculateVolumeCredits(play, perf);
+                outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(performanceAmount / 100), perf.Audience);
+            }
+            
             outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalAmount / 100));
             outputString += $"You earned {volumeCredits} credits\n";
             return outputString;
         }
 
-        private void processPerformances(Invoice invoice, Dictionary<string, Play> plays, ref float totalAmount, ref int volumeCredits, ref string outputString, CultureInfo cultureInfo)
+        private float CalculatePerformanceAmount(Play play, Performance perf)
         {
-            foreach (var perf in invoice.Performances)
-            {
-                Play play = plays[perf.PlayID];
                 float performanceAmount = 0;
-
+                
                 performanceAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
 
+                // add extra credit for every ten comedy attendees
+                return performanceAmount;
+        }
+        
+        private int CalculateVolumeCredits(Play play, Performance perf)
+        {
+                int volumeCredits = 0;
+                
                 // add volume credits
                 volumeCredits += Math.Max(perf.Audience - 30, 0);
                 // add extra credit for every ten comedy attendees
@@ -86,11 +98,7 @@ namespace TheatricalPlayersRefactoringKata
                 {
                     volumeCredits += (int)Math.Floor((decimal)perf.Audience / 5);
                 }
-
-                // print line for this order
-                outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(performanceAmount / 100), perf.Audience);
-                totalAmount += performanceAmount;
-            }
+                return volumeCredits;
         }
     }
 }
