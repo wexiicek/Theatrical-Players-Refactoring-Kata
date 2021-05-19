@@ -15,7 +15,7 @@ namespace TheatricalPlayersRefactoringKata
         public string PrintHeader(string customer)
         {
             return new StringBuilder()
-                        .AppendLine("<head>")
+                        .AppendLine("<html>")
                         .AppendLine($"  <h1>Statement for {customer}</h1>")
                         .AppendLine("  <table>")
                         .AppendLine("    <tr><th>play</th><th>seats</th><th>cost</th></tr>")
@@ -33,7 +33,7 @@ namespace TheatricalPlayersRefactoringKata
                 .AppendLine("  </table>")
                 .AppendLine(String.Format(_cultureInfo, "  <p>Amount owed is <em>{0:C}</em></p>", totalAmount))
                 .AppendLine($"  <p>You earned <em>{volumeCredits}</em> credits</p>")
-                .AppendLine("</html>")
+                .Append("</html>")
                 .ToString();
         }
     }

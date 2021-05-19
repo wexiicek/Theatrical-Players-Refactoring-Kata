@@ -28,6 +28,9 @@ namespace TheatricalPlayersRefactoringKata
 
         private string InnerPrint(Invoice invoice, Dictionary<string, Play> plays, IOutputCreator outputCreator)
         {
+            //if (plays.Count == 0)
+            //    return String.Empty;
+
             float totalAmount = 0;
             int volumeCredits = 0;
             string outputString = outputCreator.PrintHeader(invoice.Customer);
