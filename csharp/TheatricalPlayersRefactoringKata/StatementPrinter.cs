@@ -56,11 +56,11 @@ namespace TheatricalPlayersRefactoringKata
             return totalPerformancePrice;
         }
 
-        public string InnerPrint(Invoice invoice, Dictionary<string, Play> plays)
+        public string InnerPrint(Invoice invoice, Dictionary<string, Play> plays, OutputCreator outputCreator)
         {
             float totalAmount = 0;
             int volumeCredits = 0;
-            string outputString = $"Statement for {invoice.Customer}\n";
+            string outputString = outputCreator.PrintHeader(invoice.Customer);
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
             foreach (var perf in invoice.Performances)
@@ -69,11 +69,10 @@ namespace TheatricalPlayersRefactoringKata
                 float performanceAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
                 totalAmount += performanceAmount;
                 volumeCredits += CalculateVolumeCredits(play, perf);
-                outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, GetPrice(performanceAmount), perf.Audience);
+                outputString += outputCreator.PrintBody(play.Name, GetPrice(performanceAmount), perf.Audience);
             }
 
-            outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", GetPrice(totalAmount));
-            outputString += $"You earned {volumeCredits} credits\n";
+            outputString += outputCreator.PrintFooter(GetPrice(totalAmount), volumeCredits);
             return outputString;
         }
         /*
@@ -84,12 +83,8 @@ namespace TheatricalPlayersRefactoringKata
         */
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
-            string outputString = $"Statement for {invoice.Customer}\n";
-
-            outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", GetPrice(totalAmount));
-            outputString += $"You earned {volumeCredits} credits\n";
-
-            return InnerPrint(invoice, plays, NormalStringCreator);
+            OutputCreator creator = new OutputCreator("en-US");
+            return InnerPrint(invoice, plays, creator);
         }
 
         private static decimal GetPrice(float performanceAmount)
