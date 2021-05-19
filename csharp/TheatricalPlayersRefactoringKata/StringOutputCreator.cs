@@ -3,11 +3,11 @@ using System.Globalization;
 
 namespace TheatricalPlayersRefactoringKata
 {
-    public class OutputCreator : IOutputCreator
+    public class StringOutputCreator : IOutputCreator
     {
         private readonly CultureInfo _cultureInfo;
         
-        public OutputCreator(string country = "en-US")
+        public StringOutputCreator(string country = "en-US")
         {
             _cultureInfo = new CultureInfo(country);
         }

@@ -13,39 +13,17 @@ namespace TheatricalPlayersRefactoringKata
                 { "comedy", new Comedy() },
                 { "tragedy", new Tragedy() },
             };
-        
-        private const float BasePriceComedy = 30000;
-        private const float BasePriceTragedy = 40000;
-        
-        private const int AudienceTresholdComedy = 20;
-        private const int AudienceTresholdTragedy = 30;
 
         private float DetermineAmountByPlaytype(string playType, int audience)
         {
-            return _playtypes[playType].GetPrice(audience);
-        }
-
-        private static float GetPriceForComedy(int audience)
-        {
-            var totalPerformancePrice = BasePriceComedy;
-            if (audience > AudienceTresholdComedy)
+            try
             {
-                totalPerformancePrice += 10000 + 500 * (audience - AudienceTresholdComedy);
+                return _playtypes[playType].GetPrice(audience);
             }
-
-            totalPerformancePrice += 300 * audience;
-            return totalPerformancePrice;
-        }
-
-        private static float GetPriceForTragedy(int audience)
-        {
-            float totalPerformancePrice = BasePriceTragedy;
-            if (audience > AudienceTresholdTragedy)
+            catch (Exception e)
             {
-                totalPerformancePrice += 1000 * (audience - AudienceTresholdTragedy);
+                throw new Exception("Play Type Not Found");
             }
-
-            return totalPerformancePrice;
         }
 
         private string InnerPrint(Invoice invoice, Dictionary<string, Play> plays, IOutputCreator outputCreator)
@@ -53,7 +31,6 @@ namespace TheatricalPlayersRefactoringKata
             float totalAmount = 0;
             int volumeCredits = 0;
             string outputString = outputCreator.PrintHeader(invoice.Customer);
-            CultureInfo cultureInfo = new CultureInfo("en-US");
 
             foreach (var perf in invoice.Performances)
             {
@@ -67,15 +44,15 @@ namespace TheatricalPlayersRefactoringKata
             outputString += outputCreator.PrintFooter(GetPrice(totalAmount), volumeCredits);
             return outputString;
         }
-        /*
+
         public string PrintAsHtml(Invoice invoice, Dictionary<string, Play> plays)
         {
-            return InnerPrint(invoice, plays, HtmlStringCreator);
+            var creator = new HtmlOutputCreator();
+            return InnerPrint(invoice, plays, creator);
         }
-        */
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
-            var creator = new OutputCreator("en-US");
+            var creator = new StringOutputCreator();
             return InnerPrint(invoice, plays, creator);
         }
 
