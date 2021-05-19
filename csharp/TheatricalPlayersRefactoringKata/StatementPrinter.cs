@@ -56,8 +56,7 @@ namespace TheatricalPlayersRefactoringKata
             return totalPerformancePrice;
         }
 
-
-        public string Print(Invoice invoice, Dictionary<string, Play> plays)
+        public string InnerPrint(Invoice invoice, Dictionary<string, Play> plays)
         {
             float totalAmount = 0;
             int volumeCredits = 0;
@@ -72,10 +71,25 @@ namespace TheatricalPlayersRefactoringKata
                 volumeCredits += CalculateVolumeCredits(play, perf);
                 outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, GetPrice(performanceAmount), perf.Audience);
             }
-            
+
             outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", GetPrice(totalAmount));
             outputString += $"You earned {volumeCredits} credits\n";
             return outputString;
+        }
+        /*
+        public string PrintAsHtml(Invoice invoice, Dictionary<string, Play> plays)
+        {
+            return InnerPrint(invoice, plays, HtmlStringCreator);
+        }
+        */
+        public string Print(Invoice invoice, Dictionary<string, Play> plays)
+        {
+            string outputString = $"Statement for {invoice.Customer}\n";
+
+            outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", GetPrice(totalAmount));
+            outputString += $"You earned {volumeCredits} credits\n";
+
+            return InnerPrint(invoice, plays, NormalStringCreator);
         }
 
         private static decimal GetPrice(float performanceAmount)
