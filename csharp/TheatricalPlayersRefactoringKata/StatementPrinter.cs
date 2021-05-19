@@ -20,7 +20,7 @@ namespace TheatricalPlayersRefactoringKata
             {
                 return _playtypes[playType].GetPrice(audience);
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 throw new Exception("Play Type Not Found");
             }
@@ -28,9 +28,6 @@ namespace TheatricalPlayersRefactoringKata
 
         private string InnerPrint(Invoice invoice, Dictionary<string, Play> plays, IOutputCreator outputCreator)
         {
-            //if (plays.Count == 0)
-            //    return String.Empty;
-
             float totalAmount = 0;
             int volumeCredits = 0;
             string outputString = outputCreator.PrintHeader(invoice.Customer);
@@ -67,16 +64,14 @@ namespace TheatricalPlayersRefactoringKata
 
         private int CalculateVolumeCredits(Play play, Performance perf)
         {
-                int volumeCredits = 0;
-                
-                // add volume credits
-                volumeCredits += Math.Max(perf.Audience - 30, 0);
-                // add extra credit for every ten comedy attendees
-                if (_extraCreditCategory.Contains(play.Type))
-                {
-                    volumeCredits += (int)Math.Floor((decimal)perf.Audience / 5);
-                }
-                return volumeCredits;
+            int volumeCredits = 0;
+            volumeCredits += Math.Max(perf.Audience - 30, 0);
+
+            if (_extraCreditCategory.Contains(play.Type))
+            {
+                volumeCredits += (int)Math.Floor((decimal)perf.Audience / 5);
+            }
+            return volumeCredits;
         }
     }
 }
