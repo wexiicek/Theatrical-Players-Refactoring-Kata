@@ -6,24 +6,25 @@ namespace TheatricalPlayersRefactoringKata
 {
     public class StatementPrinter
     {
-        private List<string> extraCreditCategory = new List<string>() { "comedy" };
+        private readonly List<string> _extraCreditCategory = new List<string>() { "comedy" };
         
-        private const float basePriceComedy = 30000;
-        private const float basePriceTragedy = 40000;
+        private const float BasePriceComedy = 30000;
+        private const float BasePriceTragedy = 40000;
         
-        private const int audienceTresholdComedy = 20;
-        private const int audienceTresholdTragedy = 30;
+        private const int AudienceTresholdComedy = 20;
+        private const int AudienceTresholdTragedy = 30;
 
         private float DetermineAmountByPlaytype(string playType, int audience)
         {
-            float totalPerformancePrice = 0;
+            
+            float totalPerformancePrice;
             switch (playType) 
             {
                 case "tragedy":
-                    totalPerformancePrice = StatementPrinter.getPriceForTragedy(audience);
+                    totalPerformancePrice = GetPriceForTragedy(audience);
                     break;
                 case "comedy":
-                    totalPerformancePrice = getPriceForComedy(audience);
+                    totalPerformancePrice = GetPriceForComedy(audience);
                     break;
                 default:
                     throw new Exception("unknown type: " + playType);
@@ -32,24 +33,24 @@ namespace TheatricalPlayersRefactoringKata
             return totalPerformancePrice;
         }
 
-        private static float getPriceForComedy(int audience)
+        private static float GetPriceForComedy(int audience)
         {
-            float totalPerformancePrice = basePriceComedy;
-            if (audience > audienceTresholdComedy)
+            float totalPerformancePrice = BasePriceComedy;
+            if (audience > AudienceTresholdComedy)
             {
-                totalPerformancePrice += 10000 + 500 * (audience - audienceTresholdComedy);
+                totalPerformancePrice += 10000 + 500 * (audience - AudienceTresholdComedy);
             }
 
             totalPerformancePrice += 300 * audience;
             return totalPerformancePrice;
         }
 
-        private static float getPriceForTragedy(int audience)
+        private static float GetPriceForTragedy(int audience)
         {
-            float totalPerformancePrice = basePriceTragedy;
-            if (audience > audienceTresholdTragedy)
+            float totalPerformancePrice = BasePriceTragedy;
+            if (audience > AudienceTresholdTragedy)
             {
-                totalPerformancePrice += 1000 * (audience - audienceTresholdTragedy);
+                totalPerformancePrice += 1000 * (audience - AudienceTresholdTragedy);
             }
 
             return totalPerformancePrice;
@@ -66,27 +67,23 @@ namespace TheatricalPlayersRefactoringKata
             foreach (var perf in invoice.Performances)
             {
                 Play play = plays[perf.PlayID];
-                float performanceAmount = CalculatePerformanceAmount(play, perf);
+                float performanceAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
                 totalAmount += performanceAmount;
                 volumeCredits += CalculateVolumeCredits(play, perf);
-                outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(performanceAmount / 100), perf.Audience);
+                outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, GetPrice(performanceAmount), perf.Audience);
             }
             
-            outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalAmount / 100));
+            outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", GetPrice(totalAmount));
             outputString += $"You earned {volumeCredits} credits\n";
             return outputString;
         }
 
-        private float CalculatePerformanceAmount(Play play, Performance perf)
+        private static decimal GetPrice(float performanceAmount)
         {
-                float performanceAmount = 0;
-                
-                performanceAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
-
-                // add extra credit for every ten comedy attendees
-                return performanceAmount;
+            return Convert.ToDecimal(performanceAmount / 100);
         }
-        
+
+
         private int CalculateVolumeCredits(Play play, Performance perf)
         {
                 int volumeCredits = 0;
@@ -94,7 +91,7 @@ namespace TheatricalPlayersRefactoringKata
                 // add volume credits
                 volumeCredits += Math.Max(perf.Audience - 30, 0);
                 // add extra credit for every ten comedy attendees
-                if (extraCreditCategory.Contains(play.Type))
+                if (_extraCreditCategory.Contains(play.Type))
                 {
                     volumeCredits += (int)Math.Floor((decimal)perf.Audience / 5);
                 }
