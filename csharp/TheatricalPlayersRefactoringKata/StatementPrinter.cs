@@ -55,6 +55,7 @@ namespace TheatricalPlayersRefactoringKata
             return totalPerformancePrice;
         }
 
+
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
             float totalAmount = 0;
@@ -62,13 +63,22 @@ namespace TheatricalPlayersRefactoringKata
             string outputString = $"Statement for {invoice.Customer}\n";
             CultureInfo cultureInfo = new CultureInfo("en-US");
 
-            foreach(var perf in invoice.Performances) 
+            processPerformances(invoice, plays, ref totalAmount, ref volumeCredits, ref outputString, cultureInfo);
+
+            outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalAmount / 100));
+            outputString += $"You earned {volumeCredits} credits\n";
+            return outputString;
+        }
+
+        private void processPerformances(Invoice invoice, Dictionary<string, Play> plays, ref float totalAmount, ref int volumeCredits, ref string outputString, CultureInfo cultureInfo)
+        {
+            foreach (var perf in invoice.Performances)
             {
                 Play play = plays[perf.PlayID];
                 float performanceAmount = 0;
 
                 performanceAmount = DetermineAmountByPlaytype(play.Type, perf.Audience);
-                
+
                 // add volume credits
                 volumeCredits += Math.Max(perf.Audience - 30, 0);
                 // add extra credit for every ten comedy attendees
@@ -81,9 +91,6 @@ namespace TheatricalPlayersRefactoringKata
                 outputString += String.Format(cultureInfo, "  {0}: {1:C} ({2} seats)\n", play.Name, Convert.ToDecimal(performanceAmount / 100), perf.Audience);
                 totalAmount += performanceAmount;
             }
-            outputString += String.Format(cultureInfo, "Amount owed is {0:C}\n", Convert.ToDecimal(totalAmount / 100));
-            outputString += $"You earned {volumeCredits} credits\n";
-            return outputString;
         }
     }
 }
