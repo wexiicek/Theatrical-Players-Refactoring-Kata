@@ -7,6 +7,12 @@ namespace TheatricalPlayersRefactoringKata
     public class StatementPrinter
     {
         private readonly List<string> _extraCreditCategory = new List<string>() { "comedy" };
+        private readonly Dictionary<string, IPlayType> _playtypes =
+            new Dictionary<string, IPlayType>()
+            {
+                { "comedy", new Comedy() },
+                { "tragedy", new Tragedy() },
+            };
         
         private const float BasePriceComedy = 30000;
         private const float BasePriceTragedy = 40000;
@@ -14,23 +20,9 @@ namespace TheatricalPlayersRefactoringKata
         private const int AudienceTresholdComedy = 20;
         private const int AudienceTresholdTragedy = 30;
 
-        private static float DetermineAmountByPlaytype(string playType, int audience)
+        private float DetermineAmountByPlaytype(string playType, int audience)
         {
-            
-            float totalPerformancePrice;
-            switch (playType) 
-            {
-                case "tragedy":
-                    totalPerformancePrice = GetPriceForTragedy(audience);
-                    break;
-                case "comedy":
-                    totalPerformancePrice = GetPriceForComedy(audience);
-                    break;
-                default:
-                    throw new Exception("unknown type: " + playType);
-            }
-            
-            return totalPerformancePrice;
+            return _playtypes[playType].GetPrice(audience);
         }
 
         private static float GetPriceForComedy(int audience)
