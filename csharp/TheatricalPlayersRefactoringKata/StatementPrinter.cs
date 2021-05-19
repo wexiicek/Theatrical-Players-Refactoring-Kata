@@ -14,7 +14,7 @@ namespace TheatricalPlayersRefactoringKata
         private const int AudienceTresholdComedy = 20;
         private const int AudienceTresholdTragedy = 30;
 
-        private float DetermineAmountByPlaytype(string playType, int audience)
+        private static float DetermineAmountByPlaytype(string playType, int audience)
         {
             
             float totalPerformancePrice;
@@ -35,7 +35,7 @@ namespace TheatricalPlayersRefactoringKata
 
         private static float GetPriceForComedy(int audience)
         {
-            float totalPerformancePrice = BasePriceComedy;
+            var totalPerformancePrice = BasePriceComedy;
             if (audience > AudienceTresholdComedy)
             {
                 totalPerformancePrice += 10000 + 500 * (audience - AudienceTresholdComedy);
@@ -56,7 +56,7 @@ namespace TheatricalPlayersRefactoringKata
             return totalPerformancePrice;
         }
 
-        public string InnerPrint(Invoice invoice, Dictionary<string, Play> plays, OutputCreator outputCreator)
+        private string InnerPrint(Invoice invoice, Dictionary<string, Play> plays, IOutputCreator outputCreator)
         {
             float totalAmount = 0;
             int volumeCredits = 0;
@@ -83,7 +83,7 @@ namespace TheatricalPlayersRefactoringKata
         */
         public string Print(Invoice invoice, Dictionary<string, Play> plays)
         {
-            OutputCreator creator = new OutputCreator("en-US");
+            var creator = new OutputCreator("en-US");
             return InnerPrint(invoice, plays, creator);
         }
 

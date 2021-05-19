@@ -3,9 +3,9 @@ using System.Globalization;
 
 namespace TheatricalPlayersRefactoringKata
 {
-    public class OutputCreator
+    public class OutputCreator : IOutputCreator
     {
-        private CultureInfo _cultureInfo;
+        private readonly CultureInfo _cultureInfo;
         
         public OutputCreator(string country = "en-US")
         {
