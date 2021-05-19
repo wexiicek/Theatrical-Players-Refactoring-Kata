@@ -16,6 +16,11 @@ namespace TheatricalPlayersRefactoringKata
             return $"Statement for {customer}\n";
         }
        
+        public string PrintBody(string playName, decimal performanceAmount, int audience)
+        {
+            return String.Format(_cultureInfo, "  {0}: {1:C} ({2} seats)\n", playName, performanceAmount, audience);
+        }
+        
         public string PrintFooter(decimal totalAmount, int volumeCredits)
         {
             string outputString = "";
@@ -24,9 +29,6 @@ namespace TheatricalPlayersRefactoringKata
             return outputString;
         }
        
-        public string PrintBody(string playName, decimal performanceAmount, int audience)
-        {
-            return String.Format(_cultureInfo, "  {0}: {1:C} ({2} seats)\n", playName, performanceAmount, audience);
-        }
+       
     }
 }

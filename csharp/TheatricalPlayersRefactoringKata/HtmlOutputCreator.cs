@@ -1,5 +1,6 @@
 using System;
 using System.Globalization;
+using System.Text;
 
 namespace TheatricalPlayersRefactoringKata
 {
@@ -13,17 +14,27 @@ namespace TheatricalPlayersRefactoringKata
         }
         public string PrintHeader(string customer)
         {
-            return $"<head>\n<h1>Statement for {customer}</h1>\n<table>\n<tr>\n<th>play</th>\n<th>seats</th>\n<th>cost</th>\n</tr>\n";
-        }
-       
-        public string PrintFooter(decimal totalAmount, int volumeCredits)
-        {
-            return $"</table>\n<p>Amount owed is <em>${totalAmount}</em></p>\n<p>You earned <em>{volumeCredits}</em> credits</p>\n";
+            return new StringBuilder()
+                        .AppendLine("<head>")
+                        .AppendLine($"  <h1>Statement for {customer}</h1>")
+                        .AppendLine("  <table>")
+                        .AppendLine("    <tr><th>play</th><th>seats</th><th>cost</th></tr>")
+                        .ToString();
         }
        
         public string PrintBody(string playName, decimal performanceAmount, int audience)
         {
-            return String.Format(_cultureInfo, "  {0}: {1:C} ({2} seats)\n", playName, performanceAmount, audience);
+            return String.Format(_cultureInfo, "    <tr><td>{0}</td><td>{1}</td><td>{2:C}</td></tr>\n", playName, audience, performanceAmount);
+        }
+        
+        public string PrintFooter(decimal totalAmount, int volumeCredits)
+        {
+            return new StringBuilder()
+                .AppendLine("  </table>")
+                .AppendLine(String.Format(_cultureInfo, "  <p>Amount owed is <em>{0:C}</em></p>", totalAmount))
+                .AppendLine($"  <p>You earned <em>{volumeCredits}</em> credits</p>")
+                .AppendLine("</html>")
+                .ToString();
         }
     }
 }
